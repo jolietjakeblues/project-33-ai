@@ -17,6 +17,7 @@ OUTPUT_JSONL = "data/processed/ai_output_300.jsonl"
 
 API_URL = "https://api.openai.com/v1/responses"
 MODEL = "gpt-4.1"
+
 MAX_RETRIES = 3
 SLEEP_BETWEEN_REQUESTS = 0.5
 
@@ -39,22 +40,21 @@ def load_prompt_template(path: str) -> Dict[str, Any]:
 
 
 def build_request(prompt_template: Dict[str, Any], omschrijving: str) -> Dict[str, Any]:
-    user_content = prompt_template["user"]["content"].replace(
-        "{{omschrijving}}", omschrijving.strip()
+    """
+    Bouwt een geldige request voor de Responses API.
+    Alles wordt samengevoegd tot één input_text.
+    """
+    input_text = (
+        prompt_template["system"]["content"]
+        + "\n\n"
+        + prompt_template["user"]["content"].replace(
+            "{{omschrijving}}", omschrijving.strip()
+        )
     )
 
     return {
         "model": MODEL,
-        "input": [
-            {
-                "role": "system",
-                "content": prompt_template["system"]["content"]
-            },
-            {
-                "role": "user",
-                "content": user_content
-            }
-        ],
+        "input_text": input_text,
         "response_format": {
             "type": "json_object"
         }
@@ -62,14 +62,19 @@ def build_request(prompt_template: Dict[str, Any], omschrijving: str) -> Dict[st
 
 
 def call_api(payload: Dict[str, Any]) -> Dict[str, Any]:
-    response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
+    response = requests.post(
+        API_URL,
+        headers=HEADERS,
+        json=payload,
+        timeout=60
+    )
     response.raise_for_status()
     return response.json()
 
 
 def extract_json_output(api_response: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Verwacht exact één JSON-object als output.
+    Verwacht exact één JSON-object in de response.
     Faal hard als dat niet zo is.
     """
     try:
@@ -112,7 +117,10 @@ def main():
     with open(INPUT_CSV, newline="", encoding="cp1252") as csvfile, \
          open(OUTPUT_JSONL, "w", encoding="utf-8") as outfile:
 
-        reader = csv.DictReader(csvfile)
+        reader = csv.DictReader(csvfile, delimiter=";")
+
+        if not reader.fieldnames:
+            sys.exit("ERROR: CSV heeft geen header")
 
         if "rijksmonumentnummer" not in reader.fieldnames:
             sys.exit("ERROR: kolom 'rijksmonumentnummer' niet gevonden in CSV")
@@ -122,7 +130,7 @@ def main():
 
         for i, row in enumerate(reader, start=1):
             monument_id = row.get("rijksmonumentnummer")
-            omschrijving = row.get("omschrijving", "").strip()
+            omschrijving = (row.get("omschrijving") or "").strip()
 
             if not monument_id or not omschrijving:
                 print(f"[SKIP] Lege regel bij record {i}")
@@ -141,7 +149,9 @@ def main():
                         "ai_result": result
                     }
 
-                    outfile.write(json.dumps(output_record, ensure_ascii=False) + "\n")
+                    outfile.write(
+                        json.dumps(output_record, ensure_ascii=False) + "\n"
+                    )
                     outfile.flush()
 
                     print(f"[OK] {monument_id}")
