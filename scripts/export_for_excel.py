@@ -2,7 +2,7 @@ import json
 import csv
 import os
 
-INPUT_JSONL = "data/processed/ai_output_300_2.jsonl"
+INPUT_JSONL = "data/processed/ai_output_300.jsonl"
 OUTPUT_CSV = "data/processed/ai_output_300_for_excel.csv"
 
 FIELDNAMES = [

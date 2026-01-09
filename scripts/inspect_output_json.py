@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-INPUT = "data/processed/ai_output_300_2.jsonl"
+INPUT = "data/processed/ai_output_300.jsonl"
 
 rows = []
 
