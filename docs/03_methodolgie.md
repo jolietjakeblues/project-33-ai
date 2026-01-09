@@ -17,6 +17,12 @@ De AI is gebruikt als regelvolgende classifier.
 Creativiteit is expliciet uitgeschakeld (temperature = 0).
 Alle definities en prioriteitsregels zijn vastgelegd.
 
+Naast het eindlabel per omschrijving is aanvullend een analyse op signaalniveau uitgevoerd.
+Hierbij is gekeken of bepaalde formuleringstypen ergens in de omschrijving voorkomen,
+ongeacht prioriteit. Deze analyse is uitsluitend gebruikt voor evaluatie en interpretatie,
+niet voor classificatie of beleidsdoorgeleiding.
+
+
 ## Reproduceerbaarheid
 - Vaste prompts.
 - Vaste drempelwaarden.

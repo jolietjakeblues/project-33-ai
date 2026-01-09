@@ -33,6 +33,9 @@ Indien meerdere typen voorkomen, geldt altijd de volgende volgorde:
 
 Het hoogste type bepaalt het eindlabel.
 
+Het labelcontract regelt uitsluitend de toekenning van één eindlabel per omschrijving
+en doet geen uitspraak over het aantal inhoudelijk relevante signalen binnen die omschrijving.
+
 ## Onderzoeksstatus
 - Uitsluiting, relatieve waardering: inhoudelijk relevant
 - Constatering, bescherming vanwege: contextueel relevant
