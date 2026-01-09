@@ -12,7 +12,7 @@ import requests
 # =====================
 
 INPUT_CSV = "data/raw/project_Hugo_voor AI.csv"
-PROMPT_FILE = "prompts/project33_prompt_v2.jsonl"
+PROMPT_FILE = "prompts/project33_prompt_v2.json"
 OUTPUT_JSONL = "data/processed/ai_output_300.jsonl"
 
 API_URL = "https://api.openai.com/v1/chat/completions"
