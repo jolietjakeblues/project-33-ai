@@ -15,8 +15,8 @@ INPUT_CSV = "data/raw/project_Hugo_voor AI.csv"
 PROMPT_FILE = "prompts/project33_prompt_v1.json"
 OUTPUT_JSONL = "data/processed/ai_output_300.jsonl"
 
-API_URL = "https://api.openai.com/v1/responses"
-MODEL = "gpt-5.2"
+API_URL = "https://api.openai.com/v1/chat/completions"
+MODEL = "gpt-4.1"
 
 MAX_RETRIES = 3
 SLEEP_BETWEEN_REQUESTS = 0.5
@@ -40,24 +40,21 @@ def load_prompt_template(path: str) -> Dict[str, Any]:
 
 
 def build_request(prompt_template: Dict[str, Any], omschrijving: str) -> Dict[str, Any]:
-    """
-    Bouwt een geldige request voor de Responses API.
-    Alles wordt samengevoegd tot één input_text.
-    """
-    input_text = (
-        prompt_template["system"]["content"]
-        + "\n\n"
-        + prompt_template["user"]["content"].replace(
-            "{{omschrijving}}", omschrijving.strip()
-        )
-    )
-
     return {
         "model": MODEL,
-        "input_text": input_text,
-        "response_format": {
-            "type": "json_object"
-        }
+        "temperature": 0,
+        "messages": [
+            {
+                "role": "system",
+                "content": prompt_template["system"]["content"]
+            },
+            {
+                "role": "user",
+                "content": prompt_template["user"]["content"].replace(
+                    "{{omschrijving}}", omschrijving.strip()
+                )
+            }
+        ]
     }
 
 
@@ -73,12 +70,8 @@ def call_api(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def extract_json_output(api_response: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Verwacht exact één JSON-object in de response.
-    Faal hard als dat niet zo is.
-    """
     try:
-        content = api_response["output"][0]["content"][0]["text"]
+        content = api_response["choices"][0]["message"]["content"]
         return json.loads(content)
     except Exception as e:
         raise ValueError(f"Invalid JSON output: {e}")
