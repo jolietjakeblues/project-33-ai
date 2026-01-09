@@ -109,7 +109,7 @@ def main():
 
     os.makedirs(os.path.dirname(OUTPUT_JSONL), exist_ok=True)
 
-    with open(INPUT_CSV, newline="", encoding="utf-8") as csvfile, \
+    with open(INPUT_CSV, newline="", encoding="cp1252") as csvfile, \
          open(OUTPUT_JSONL, "w", encoding="utf-8") as outfile:
 
         reader = csv.DictReader(csvfile)
