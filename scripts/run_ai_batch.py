@@ -12,8 +12,8 @@ import requests
 # =====================
 
 INPUT_CSV = "data/raw/project_Hugo_voor AI.csv"
-PROMPT_FILE = "prompts/project33_prompt_v1.json"
-OUTPUT_JSONL = "data/processed/ai_output_300.jsonl"
+PROMPT_FILE = "prompts/project33_prompt_v2.json"
+OUTPUT_JSONL = "data/processed/ai_output_300_2.jsonl"
 
 API_URL = "https://api.openai.com/v1/chat/completions"
 MODEL = "gpt-4.1"
