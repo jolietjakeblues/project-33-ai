@@ -1,4 +1,4 @@
-# Project 33 – Experiment AI-classificatie monumentenomschrijvingen
+# Project 33 - Experiment AI-classificatie monumentenomschrijvingen
 
 Dit repository documenteert een experiment waarin is onderzocht of generatieve AI
 kan worden ingezet voor het classificeren van formuleringen in rijksmonumentenomschrijvingen,
