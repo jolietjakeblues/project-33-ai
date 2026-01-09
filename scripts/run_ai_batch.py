@@ -16,7 +16,7 @@ PROMPT_FILE = "prompts/project33_prompt_v1.json"
 OUTPUT_JSONL = "data/processed/ai_output_300.jsonl"
 
 API_URL = "https://api.openai.com/v1/responses"
-MODEL = "gpt-4.1"
+MODEL = "gpt-5.2"
 
 MAX_RETRIES = 3
 SLEEP_BETWEEN_REQUESTS = 0.5
