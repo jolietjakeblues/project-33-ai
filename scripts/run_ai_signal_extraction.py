@@ -79,35 +79,54 @@ def call_ai(omschrijving: str) -> dict:
     payload = {
         "model": MODEL,
         "input": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": USER_PROMPT_TEMPLATE.format(omschrijving=omschrijving)},
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
+            {
+                "role": "user",
+                "content": USER_PROMPT_TEMPLATE.format(omschrijving=omschrijving)
+            }
         ],
         "temperature": 0,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "ai_signalen",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "heeft_uitsluiting": {"type": "boolean"},
+                        "heeft_relatieve_waardering": {"type": "boolean"},
+                        "heeft_constatering": {"type": "boolean"},
+                        "heeft_bescherming_vanwege": {"type": "boolean"},
+                        "fragment_uitsluiting": {"type": ["string", "null"]},
+                        "fragment_relatieve_waardering": {"type": ["string", "null"]},
+                        "fragment_constatering": {"type": ["string", "null"]},
+                        "fragment_bescherming_vanwege": {"type": ["string", "null"]}
+                    },
+                    "required": [
+                        "heeft_uitsluiting",
+                        "heeft_relatieve_waardering",
+                        "heeft_constatering",
+                        "heeft_bescherming_vanwege",
+                        "fragment_uitsluiting",
+                        "fragment_relatieve_waardering",
+                        "fragment_constatering",
+                        "fragment_bescherming_vanwege"
+                    ],
+                    "additionalProperties": False
+                }
+            }
+        }
     }
 
     response = requests.post(API_URL, headers=HEADERS, json=payload)
     response.raise_for_status()
     data = response.json()
 
-    # Verzamel alle tekstoutput
-    texts = []
-    for item in data.get("output", []):
-        for content in item.get("content", []):
-            if content.get("type") == "output_text":
-                texts.append(content.get("text", ""))
+    return data["output_parsed"]
 
-    full_text = "\n".join(texts).strip()
-
-    # Zoek het JSON-blok
-    start = full_text.find("{")
-    end = full_text.rfind("}")
-
-    if start == -1 or end == -1:
-        raise ValueError("Geen JSON-object gevonden in AI-output")
-
-    json_text = full_text[start:end + 1]
-
-    return json.loads(json_text)
 
 
 # ======================
