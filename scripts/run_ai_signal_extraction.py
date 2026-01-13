@@ -79,14 +79,8 @@ def call_ai(omschrijving: str) -> dict:
     payload = {
         "model": MODEL,
         "input": [
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": USER_PROMPT_TEMPLATE.format(omschrijving=omschrijving)
-            }
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": USER_PROMPT_TEMPLATE.format(omschrijving=omschrijving)}
         ],
         "temperature": 0,
         "response_format": {
@@ -100,20 +94,41 @@ def call_ai(omschrijving: str) -> dict:
                         "heeft_relatieve_waardering": {"type": "boolean"},
                         "heeft_constatering": {"type": "boolean"},
                         "heeft_bescherming_vanwege": {"type": "boolean"},
-                        "fragment_uitsluiting": {"type": ["string", "null"]},
-                        "fragment_relatieve_waardering": {"type": ["string", "null"]},
-                        "fragment_constatering": {"type": ["string", "null"]},
-                        "fragment_bescherming_vanwege": {"type": ["string", "null"]}
+                        "fragmenten": {
+                            "type": "object",
+                            "properties": {
+                                "uitsluiting": {
+                                    "type": "array",
+                                    "items": {"type": "string"}
+                                },
+                                "relatieve_waardering": {
+                                    "type": "array",
+                                    "items": {"type": "string"}
+                                },
+                                "constatering": {
+                                    "type": "array",
+                                    "items": {"type": "string"}
+                                },
+                                "bescherming_vanwege": {
+                                    "type": "array",
+                                    "items": {"type": "string"}
+                                }
+                            },
+                            "required": [
+                                "uitsluiting",
+                                "relatieve_waardering",
+                                "constatering",
+                                "bescherming_vanwege"
+                            ],
+                            "additionalProperties": False
+                        }
                     },
                     "required": [
                         "heeft_uitsluiting",
                         "heeft_relatieve_waardering",
                         "heeft_constatering",
                         "heeft_bescherming_vanwege",
-                        "fragment_uitsluiting",
-                        "fragment_relatieve_waardering",
-                        "fragment_constatering",
-                        "fragment_bescherming_vanwege"
+                        "fragmenten"
                     ],
                     "additionalProperties": False
                 }
@@ -123,9 +138,8 @@ def call_ai(omschrijving: str) -> dict:
 
     response = requests.post(API_URL, headers=HEADERS, json=payload)
     response.raise_for_status()
-    data = response.json()
+    return response.json()["output_parsed"]
 
-    return data["output_parsed"]
 
 
 
