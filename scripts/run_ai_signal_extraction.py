@@ -87,15 +87,28 @@ def call_ai(omschrijving: str) -> dict:
 
     response = requests.post(API_URL, headers=HEADERS, json=payload)
     response.raise_for_status()
-
     data = response.json()
 
-    # Verwacht één JSON-blok als tekst
-    text_output = data["output_text"]
-    return json.loads(text_output)
+    # Verzamel alle tekstoutput
+    texts = []
+    for item in data.get("output", []):
+        for content in item.get("content", []):
+            if content.get("type") == "output_text":
+                texts.append(content.get("text", ""))
 
-def join_fragments(items):
-    return " | ".join(items) if items else ""
+    full_text = "\n".join(texts).strip()
+
+    # Zoek het JSON-blok
+    start = full_text.find("{")
+    end = full_text.rfind("}")
+
+    if start == -1 or end == -1:
+        raise ValueError("Geen JSON-object gevonden in AI-output")
+
+    json_text = full_text[start:end + 1]
+
+    return json.loads(json_text)
+
 
 # ======================
 # MAIN
