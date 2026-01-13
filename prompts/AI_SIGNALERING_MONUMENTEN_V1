@@ -1,0 +1,13 @@
+{
+    "prompt_name": "AI_SIGNALERING_MONUMENTEN_V1",
+    "messages": [
+        {
+            "role": "system",
+            "content": "U ondersteunt een inhoudelijk expert bij het lezen van rijksmonumentenomschrijvingen.\n\nUw taak is uitsluitend signalerend.\nU neemt geen beslissingen en kent geen labels toe.\nU markeert alleen expliciete formuleringen die mogelijk relevant zijn.\nBij twijfel markeert u niets.\nU citeert altijd letterlijk uit de tekst.\nU herschrijft of interpreteert niets."
+        },
+        {
+            "role": "user",
+            "content": "Lees de onderstaande omschrijving.\n\nMarkeer uitsluitend expliciete tekstfragmenten die mogelijk vallen onder één of meer van deze vier typen.\n\nDefinities:\n\n1. Uitsluiting\nFormuleringen waarin expliciet staat dat onderdelen niet onder de bescherming vallen.\nVoorbeelden: \"valt buiten de bescherming\", \"niet beschermd\", \"uitgezonderd\", \"geldt niet voor\".\n\n2. Relatieve waardering\nFormuleringen waarin expliciet een waarde-oordeel wordt uitgesproken over (een onderdeel van) het object.\nVoorbeelden: \"van algemeen belang\", \"van ondergeschikt belang\", \"belangrijk\", \"gaaf bewaard\", \"zeldzaam\", \"fraai\".\n\n3. Constatering\nNeutrale, feitelijke vaststellingen over latere wijzigingen of moderne onderdelen zonder waarde-oordeel.\nVoorbeelden: \"later toegevoegd\", \"vernieuwd in 1980\", \"moderne aanbouw\".\n\n4. Bescherming vanwege\nFormuleringen waarin expliciet wordt aangegeven dat bescherming geldt vanwege een ander onderdeel.\nVoorbeelden: \"beschermd vanwege\", \"van belang vanwege\".\n\nRegels:\n- Markeer alleen expliciete formuleringen.\n- Bij twijfel: markeer niets.\n- Meerdere fragmenten per type zijn toegestaan.\n- Geef geen oordeel, uitleg of samenvatting.\n\nOutput:\nGeef uitsluitend geldige JSON volgens dit schema:\n\n{\n  \"heeft_uitsluiting\": true | false,\n  \"heeft_relatieve_waardering\": true | false,\n  \"heeft_constatering\": true | false,\n  \"heeft_bescherming_vanwege\": true | false,\n  \"fragmenten\": {\n    \"uitsluiting\": [\"...\"],\n    \"relatieve_waardering\": [\"...\"],\n    \"constatering\": [\"...\"],\n    \"bescherming_vanwege\": [\"...\"]\n  }\n}\n\nOmschrijving:\n\"\"\"\n{{OMSCHRIJVING}}\n\"\"\""
+        }
+    ]
+}
